@@ -1,7 +1,10 @@
-/* RESET */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* --- RESET & BASE --- */
+*, *::before, *::after { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
 
-/* BODY */
 body {
     font-family: 'DM Sans', sans-serif;
     background: #0d0d0d;
@@ -10,6 +13,7 @@ body {
     overflow-x: hidden;
 }
 
+/* --- BACKGROUND ACCENTS --- */
 body::before {
     content: '';
     position: fixed;
@@ -36,7 +40,7 @@ body::after {
     z-index: 0;
 }
 
-/* NAVBAR */
+/* --- TOP NAVIGATION --- */
 nav {
     position: sticky;
     top: 0;
@@ -96,15 +100,15 @@ nav {
 
 .username-display { font-size: 13px; color: rgba(255,255,255,0.8); }
 
-/* LAYOUT */
+/* --- PAGE LAYOUT --- */
 .page-body {
-    display: flex;
+    display: flex; /* Creates the two-column layout */
     min-height: calc(100vh - 64px);
     position: relative;
     z-index: 1;
 }
 
-/* SIDEBAR */
+/* --- SIDEBAR --- */
 .sidebar {
     width: 220px;
     background: #0f0f0f;
@@ -114,10 +118,23 @@ nav {
     position: sticky;
     top: 64px;
     height: calc(100vh - 64px);
-    transition: width 0.25s;
+    transition: width 0.25s ease;
+    flex-shrink: 0; /* Prevents sidebar from being crushed by content */
 }
 
-.sidebar.collapsed { width: 56px; }
+/* Sidebar Collapsed State */
+.sidebar.collapsed { 
+    width: 70px; 
+}
+
+.sidebar.collapsed .nav-label { 
+    display: none; /* Hides text labels when sidebar is thin */
+}
+
+.sidebar.collapsed .nav-item {
+    justify-content: center;
+    padding: 12px 0;
+}
 
 .sidebar-toggle {
     height: 48px;
@@ -128,12 +145,20 @@ nav {
     cursor: pointer;
 }
 
-.toggle-icon { width: 18px; fill: rgba(255,255,255,0.3); }
+.toggle-icon { 
+    width: 18px; 
+    fill: rgba(255,255,255,0.3); 
+    transition: transform 0.3s ease;
+}
+
+.sidebar.collapsed .toggle-icon {
+    transform: rotate(180deg);
+}
 
 .nav-links {
-    display: flex;
-    flex-direction: column;
-    padding: 12px 8px;
+    display: flex; 
+    flex-direction: column; 
+    padding: 12px 8px; 
     flex: 1;
 }
 
@@ -141,33 +166,93 @@ nav {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px;
-    border-radius: 99px;
+    padding: 12px;
+    border-radius: 12px;
     text-decoration: none;
+    transition: all 0.2s;
+    color: rgba(255,255,255,0.45);
 }
 
-.nav-item:hover { background: rgba(255,255,255,0.05); }
+.nav-item:hover { 
+    background: rgba(255,255,255,0.05); 
+    color: #fff;
+}
 
-.nav-item.active { background: rgba(255,184,30,0.1); }
+.nav-item.active { 
+    background: rgba(255,184,30,0.1); 
+    color: #ffb81e;
+}
 
 .nav-item svg {
-    width: 17px;
-    fill: rgba(255,255,255,0.3);
+    width: 20px;
+    fill: currentColor;
+    opacity: 0.6;
 }
 
-.nav-item.active svg { fill: #ffb81e; }
+.nav-item.active svg { 
+    opacity: 1;
+}
 
-.nav-label { font-size: 13px; color: rgba(255,255,255,0.45); }
+.nav-label { font-size: 14px; }
 
-.sidebar-bottom { padding: 8px; }
+.sidebar-bottom { padding: 8px; border-top: 1px solid rgba(255,255,255,0.05); }
 
-/* MAIN CONTENT */
+/* --- MAIN CONTENT AREA --- */
 .main-content {
     flex: 1;
+    padding: 40px 60px; /* Added padding to prevent text from hitting the sidebar */
+    max-width: 1400px;
+    margin: 0 auto;
     animation: rise 0.6s ease;
 }
 
+/* --- HERO SECTION --- */
+.hero {
+    margin-bottom: 40px;
+}
+
+.hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin: 10px 0;
+}
+
+.hero em { color: #ffb81e; font-style: normal; }
+
+/* --- TAB NAVIGATION --- */
+.tabs {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.tab {
+    padding-bottom: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    transition: all 0.3s;
+}
+
+.tab.active {
+    color: #ffb81e;
+    border-bottom: 2px solid #ffb81e;
+}
+
+/* --- PRODUCT GRIDS --- */
+.product-grid, .grocery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+/* --- ANIMATIONS --- */
 @keyframes rise {
     from { opacity: 0; transform: translateY(18px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+.nav-tooltip { display: none; }
+.sidebar.collapsed .nav-item:hover .nav-tooltip { display: block; }

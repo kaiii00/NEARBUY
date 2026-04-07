@@ -10,12 +10,10 @@ $error = "";
 if (isset($_GET["delete"])) {
     $del_id = intval($_GET["delete"]);
     
-    // Safety check: ensure user owns the product
     $stmt = $conn->prepare("DELETE FROM products WHERE id = ? AND user_id = ?");
     $stmt->bind_param("ii", $del_id, $user_id);
     
     if ($stmt->execute()) {
-        // Redirect back to the same page without the ?delete in the URL
         header("Location: my_listings.php?msg=deleted");
         exit();
     } else {
@@ -23,7 +21,6 @@ if (isset($_GET["delete"])) {
     }
 }
 
-// ... rest of your fetch code ...
 // Fetch this user's products
 $stmt = $conn->prepare("SELECT * FROM products WHERE user_id = ? ORDER BY created_at DESC");
 $stmt->bind_param("i", $user_id);
@@ -37,16 +34,9 @@ $result = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Listings - NearBuy</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: #0d0d0d;
-            min-height: 100vh;
-            color: #fff;
-            overflow-x: hidden;
-        }
+        /* PAGE-SPECIFIC STYLES (not in shared style.css) */
 
         body::before {
             content: '';
@@ -67,102 +57,6 @@ $result = $stmt->get_result();
             pointer-events: none; z-index: 0;
         }
 
-        /* NAV */
-        nav {
-            position: sticky; top: 0; z-index: 200;
-            background: rgba(13,13,13,0.88);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255,255,255,0.07);
-            padding: 0 24px; height: 64px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .brand-icon {
-            width: 30px; height: 30px;
-            background: linear-gradient(135deg, #ffb81e, #ff6b35);
-            border-radius: 7px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .brand-icon svg { width: 16px; height: 16px; fill: white; }
-        .brand-name { font-family: 'DM Serif Display', serif; font-size: 18px; color: #fff; letter-spacing: -0.3px; }
-        .nav-right { display: flex; align-items: center; gap: 16px; }
-        .user-pill {
-            display: flex; align-items: center; gap: 10px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 999px;
-            padding: 6px 14px 6px 6px;
-        }
-        .user-avatar {
-            width: 28px; height: 28px; border-radius: 50%;
-            background: linear-gradient(135deg, #ffb81e, #ff6b35);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 500; color: #0d0d0d;
-        }
-        .username-display { font-size: 13px; color: rgba(255,255,255,0.8); }
-
-        /* PAGE BODY */
-        .page-body { display: flex; min-height: calc(100vh - 64px); position: relative; z-index: 1; }
-
-        /* SIDEBAR */
-        .sidebar {
-            width: 220px;
-            background: #0f0f0f;
-            border-right: 1px solid rgba(255,255,255,0.07);
-            display: flex; flex-direction: column;
-            position: sticky; top: 64px;
-            height: calc(100vh - 64px);
-            flex-shrink: 0;
-            transition: width 0.25s cubic-bezier(0.4,0,0.2,1);
-            overflow: hidden; z-index: 100;
-        }
-        .sidebar.collapsed { width: 56px; }
-
-        .sidebar-toggle {
-            height: 48px;
-            display: flex; align-items: center; justify-content: flex-end;
-            padding: 0 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            cursor: pointer; flex-shrink: 0;
-        }
-        .sidebar.collapsed .sidebar-toggle { justify-content: center; padding: 0; }
-        .toggle-icon { width: 18px; height: 18px; fill: rgba(255,255,255,0.3); transition: transform 0.25s, fill 0.2s; flex-shrink: 0; }
-        .sidebar-toggle:hover .toggle-icon { fill: rgba(255,255,255,0.7); }
-        .sidebar.collapsed .toggle-icon { transform: rotate(180deg); }
-
-        .nav-links { display: flex; flex-direction: column; gap: 2px; padding: 12px 8px; flex: 1; overflow: hidden; }
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 10px; border-radius: 9px; cursor: pointer;
-            text-decoration: none; white-space: nowrap;
-            transition: background 0.15s; overflow: hidden; position: relative;
-        }
-        .nav-item:hover { background: rgba(255,255,255,0.05); }
-        .nav-item.active { background: rgba(255,184,30,0.1); }
-        .nav-item svg { width: 17px; height: 17px; fill: rgba(255,255,255,0.3); flex-shrink: 0; transition: fill 0.15s; }
-        .nav-item.active svg { fill: #ffb81e; }
-        .nav-item:hover svg { fill: rgba(255,255,255,0.65); }
-        .nav-label { font-size: 13px; color: rgba(255,255,255,0.45); transition: color 0.15s, opacity 0.2s; overflow: hidden; }
-        .nav-item.active .nav-label { color: #ffb81e; }
-        .nav-item:hover .nav-label { color: rgba(255,255,255,0.85); }
-        .sidebar.collapsed .nav-label { opacity: 0; width: 0; pointer-events: none; }
-        .sidebar.collapsed .nav-item { justify-content: center; }
-        .nav-tooltip {
-            display: none; position: absolute;
-            left: calc(100% + 10px); top: 50%; transform: translateY(-50%);
-            background: #1e1e1e; border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.85); font-size: 12px;
-            padding: 5px 10px; border-radius: 6px; white-space: nowrap; z-index: 999;
-        }
-        .sidebar.collapsed .nav-item:hover .nav-tooltip { display: block; }
-        .sidebar-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding: 8px; }
-        .nav-item.logout svg { fill: rgba(255,90,70,0.45); }
-        .nav-item.logout .nav-label { color: rgba(255,90,70,0.6); }
-        .nav-item.logout:hover { background: rgba(255,90,70,0.07); }
-        .nav-item.logout:hover svg { fill: rgba(255,90,70,0.8); }
-        .nav-item.logout:hover .nav-label { color: rgba(255,90,70,0.9); }
-
-        /* MAIN */
         .main-content { flex: 1; min-width: 0; padding: 48px; animation: rise 0.6s cubic-bezier(0.22,1,0.36,1) both; }
         @keyframes rise { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 
@@ -192,15 +86,10 @@ $result = $stmt->get_result();
         .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
         .btn-primary svg { width: 15px; height: 15px; fill: #0d0d0d; }
 
-        /* ALERTS */
-        .alert {
-            padding: 12px 16px; border-radius: 10px;
-            font-size: 13px; margin-bottom: 24px;
-        }
+        .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 24px; }
         .alert-success { background: rgba(29,158,117,0.1); border: 1px solid rgba(29,158,117,0.25); color: #1D9E75; }
         .alert-error   { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); color: #ff6b6b; }
 
-        /* TABLE */
         .table-wrap {
             background: #111111;
             border: 1px solid rgba(255,255,255,0.07);
@@ -307,7 +196,7 @@ $result = $stmt->get_result();
 </head>
 <body>
 
-<nav>
+<nav class="top-navbar">
     <a class="nav-brand" href="dashboard.php">
         <div class="brand-icon">
             <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
@@ -324,51 +213,8 @@ $result = $stmt->get_result();
 
 <div class="page-body">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-toggle" id="sidebarToggle">
-            <svg class="toggle-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        </div>
-        <nav class="nav-links">
-            <a href="dashboard.php" class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                <span class="nav-label">Dashboard</span>
-                <span class="nav-tooltip">Dashboard</span>
-            </a>
-            <a href="my_orders.php" class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
-                <span class="nav-label">My Orders</span>
-                <span class="nav-tooltip">My Orders</span>
-            </a>
-            <a href="my_listings.php" class="nav-item active">
-                <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.34C18 2.99 16.54 1.5 14.83 1.5c-.89 0-1.7.38-2.28.96L12 3.03l-.55-.57A3.17 3.17 0 009.17 1.5C7.46 1.5 6 2.99 6 4.66c0 .46.11.9.18 1.34H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
-                <span class="nav-label">My Listings</span>
-                <span class="nav-tooltip">My Listings</span>
-            </a>
-            <a href="messages.php" class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-                <span class="nav-label">Messages</span>
-                <span class="nav-tooltip">Messages</span>
-            </a>
-            <a href="profile.php" class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                <span class="nav-label">Profile</span>
-                <span class="nav-tooltip">Profile</span>
-            </a>
-            <a href="#" class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96a6.97 6.97 0 00-1.62-.94l-.36-2.54A.484.484 0 0014 3h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.47.47 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.37 1.04.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.57 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6a3.6 3.6 0 110-7.2 3.6 3.6 0 010 7.2z"/></svg>
-                <span class="nav-label">Settings</span>
-                <span class="nav-tooltip">Settings</span>
-            </a>
-        </nav>
-        <div class="sidebar-bottom">
-            <a href="logout.php" class="nav-item logout">
-                <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-                <span class="nav-label">Logout</span>
-                <span class="nav-tooltip">Logout</span>
-            </a>
-        </div>
-    </aside>
+    <!-- SHARED SIDEBAR -->
+    <?php include_once __DIR__ . "/../includes/sidebar.php"; ?>
 
     <!-- MAIN -->
     <div class="main-content">
@@ -475,27 +321,18 @@ $result = $stmt->get_result();
 </div>
 
 <script>
-    // Sidebar collapse
-    const sidebar = document.getElementById('sidebar');
-    if (localStorage.getItem('sidebar_collapsed') === 'true') sidebar.classList.add('collapsed');
-    document.getElementById('sidebarToggle').addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-        localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed'));
-    });
-
     // Edit modal
     function openEdit(id, name, description, price, location) {
-        document.getElementById('edit_id').value         = id;
-        document.getElementById('edit_name').value       = name;
+        document.getElementById('edit_id').value          = id;
+        document.getElementById('edit_name').value        = name;
         document.getElementById('edit_description').value = description;
-        document.getElementById('edit_price').value      = price;
-        document.getElementById('edit_location').value   = location;
+        document.getElementById('edit_price').value       = price;
+        document.getElementById('edit_location').value    = location;
         document.getElementById('editModal').classList.add('open');
     }
     function closeEdit() {
         document.getElementById('editModal').classList.remove('open');
     }
-    // Close modal on overlay click
     document.getElementById('editModal').addEventListener('click', function(e) {
         if (e.target === this) closeEdit();
     });
