@@ -62,7 +62,14 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
     <style>
         * { box-sizing: border-box; }
 
-        /* Hero */
+        /* ✅ NAVBAR SEARCH */
+        .navbar-search { flex: 1; max-width: 360px; margin: 0 16px; }
+        .navbar-search-wrap { position: relative; }
+        .navbar-search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; fill: rgba(255,255,255,0.25); pointer-events: none; }
+        .navbar-search-input { width: 100%; padding: 9px 14px 9px 36px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 10px; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s, background 0.2s; }
+        .navbar-search-input:focus { border-color: rgba(255,184,30,0.45); background: rgba(255,184,30,0.04); }
+        .navbar-search-input::placeholder { color: rgba(255,255,255,0.22); }
+
         .seller-hero { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 28px; background: linear-gradient(135deg, rgba(255,184,30,0.13), rgba(255,107,53,0.07)); border: 1px solid rgba(255,184,30,0.18); border-radius: 20px; padding: 32px 36px; }
         .hero-tag { font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: #ffb81e; margin-bottom: 10px; }
         .seller-hero h1 { font-family: 'DM Serif Display', serif; font-size: 30px; color: #fff; margin-bottom: 6px; line-height: 1.2; }
@@ -79,7 +86,6 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
         .shop-icon { width: 72px; height: 72px; border-radius: 18px; background: rgba(255,184,30,0.1); border: 1px solid rgba(255,184,30,0.25); display: flex; align-items: center; justify-content: center; font-size: 32px; }
         .shop-name-tag { font-size: 12px; color: rgba(255,255,255,0.4); text-align: right; }
 
-        /* Revenue highlight */
         .revenue-strip { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 28px; }
         .rev-card { background: #111; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 18px 16px; transition: border-color 0.2s; }
         .rev-card:hover { border-color: rgba(255,184,30,0.2); }
@@ -87,20 +93,15 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
         .rev-value { font-size: 22px; font-weight: 500; color: #fff; line-height: 1; margin-bottom: 6px; }
         .rev-value.yellow { color: #ffb81e; }
         .rev-value.green  { color: #34d399; }
-        .rev-value.red    { color: #f87171; }
         .rev-label { font-size: 11px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Main grid */
         .dash-grid { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
-
-        /* Cards */
         .panel-card { background: #111; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px 24px; margin-bottom: 20px; }
         .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
         .section-title { font-size: 14px; font-weight: 500; color: #fff; }
         .section-link { font-size: 12px; color: rgba(255,184,30,0.7); text-decoration: none; }
         .section-link:hover { color: #ffb81e; }
 
-        /* Orders table */
         .orders-table { width: 100%; border-collapse: collapse; }
         .orders-table th { font-size: 11px; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.5px; padding: 0 0 12px; text-align: left; font-weight: 400; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .orders-table td { font-size: 13px; color: rgba(255,255,255,0.65); padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
@@ -113,13 +114,11 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
         .status-completed { background: rgba(52,211,153,0.1);  color: #34d399; border: 1px solid rgba(52,211,153,0.25); }
         .status-cancelled { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
 
-        /* Pending alert */
         .pending-alert { display: flex; align-items: center; gap: 12px; background: rgba(255,184,30,0.07); border: 1px solid rgba(255,184,30,0.2); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; }
         .pending-alert svg { width: 18px; height: 18px; fill: #ffb81e; flex-shrink: 0; }
         .pending-alert p { font-size: 13px; color: rgba(255,255,255,0.7); }
         .pending-alert a { color: #ffb81e; text-decoration: none; font-weight: 500; }
 
-        /* Product list */
         .product-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .product-row:last-child { border-bottom: none; }
         .product-emoji { width: 38px; height: 38px; border-radius: 10px; background: rgba(255,184,30,0.07); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
@@ -128,7 +127,6 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
         .product-loc { font-size: 11px; color: rgba(255,255,255,0.3); }
         .product-price { font-size: 14px; font-weight: 500; color: #ffb81e; flex-shrink: 0; }
 
-        /* Quick links */
         .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
         .quick-link { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 14px 10px; background: #111; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; text-decoration: none; transition: border-color 0.2s, transform 0.15s; }
         .quick-link:hover { border-color: rgba(255,184,30,0.25); transform: translateY(-2px); }
@@ -141,15 +139,26 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
             .revenue-strip { grid-template-columns: repeat(3, 1fr); }
             .dash-grid { grid-template-columns: 1fr; }
             .hero-shop-badge { display: none; }
+            .navbar-search { display: none; }
         }
     </style>
 </head>
 <body>
+
+<!-- ✅ NAVBAR WITH SEARCH BAR -->
 <nav class="top-navbar">
     <a class="nav-brand" href="dashboard.php">
         <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
         <span class="brand-name">NearBuy</span>
     </a>
+
+    <form method="GET" action="search.php" class="navbar-search">
+        <div class="navbar-search-wrap">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" name="q" class="navbar-search-input" placeholder="Search buyers by name...">
+        </div>
+    </form>
+
     <div class="nav-right">
         <div class="user-pill">
             <div class="user-avatar"><?php echo $initials; ?></div>
@@ -162,7 +171,6 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
     <?php include_once __DIR__ . "/../includes/sidebar.php"; ?>
     <main class="main-content">
 
-        <!-- Hero -->
         <div class="seller-hero">
             <div>
                 <p class="hero-tag">Seller Dashboard</p>
@@ -189,7 +197,6 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
             </div>
         </div>
 
-        <!-- Stats strip -->
         <div class="revenue-strip">
             <div class="rev-card highlight">
                 <div class="rev-value yellow">₱<?php echo $revenue; ?></div>
@@ -213,7 +220,6 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
             </div>
         </div>
 
-        <!-- Pending alert -->
         <?php if (($stats['pending'] ?? 0) > 0): ?>
         <div class="pending-alert">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
@@ -222,7 +228,6 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
         <?php endif; ?>
 
         <div class="dash-grid">
-            <!-- Left: recent orders -->
             <div>
                 <div class="panel-card">
                     <div class="section-head">
@@ -266,7 +271,6 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
                 </div>
             </div>
 
-            <!-- Right panel -->
             <div>
                 <div class="quick-links">
                     <a href="add_product.php" class="quick-link">
@@ -281,9 +285,9 @@ $emojis    = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅','�
                         <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
                         <span>Listings</span>
                     </a>
-                    <a href="profile.php" class="quick-link">
-                        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-                        <span>Profile</span>
+                    <a href="search.php" class="quick-link">
+                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        <span>Search</span>
                     </a>
                 </div>
 

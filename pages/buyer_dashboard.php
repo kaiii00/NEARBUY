@@ -52,11 +52,21 @@ $product_emojis = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
         * { box-sizing: border-box; }
+
+        /* CART BUTTON */
         .cart-nav-btn { position: relative; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; text-decoration: none; transition: all 0.2s; }
         .cart-nav-btn:hover { border-color: rgba(255,184,30,0.4); background: rgba(255,184,30,0.08); }
         .cart-nav-btn svg { width: 18px; height: 18px; fill: rgba(255,255,255,0.6); }
         .cart-nav-btn:hover svg { fill: #ffb81e; }
         .cart-badge { position: absolute; top: -6px; right: -6px; background: #ffb81e; color: #0d0d0d; font-size: 10px; font-weight: 500; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        /* ✅ NAVBAR SEARCH */
+        .navbar-search { flex: 1; max-width: 360px; margin: 0 16px; }
+        .navbar-search-wrap { position: relative; }
+        .navbar-search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; fill: rgba(255,255,255,0.25); pointer-events: none; }
+        .navbar-search-input { width: 100%; padding: 9px 14px 9px 36px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 10px; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s, background 0.2s; }
+        .navbar-search-input:focus { border-color: rgba(255,184,30,0.45); background: rgba(255,184,30,0.04); }
+        .navbar-search-input::placeholder { color: rgba(255,255,255,0.22); }
 
         .hero-banner { background: linear-gradient(135deg, rgba(255,184,30,0.14), rgba(255,107,53,0.07)); border: 1px solid rgba(255,184,30,0.18); border-radius: 20px; padding: 36px 40px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
         .hero-tag { font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: #ffb81e; margin-bottom: 10px; }
@@ -145,15 +155,26 @@ $product_emojis = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅
             .stats-row { grid-template-columns: 1fr 1fr; }
             .promo-row { grid-template-columns: 1fr; }
             .hero-emojis { display: none; }
+            .navbar-search { display: none; }
         }
     </style>
 </head>
 <body>
+
+<!-- ✅ NAVBAR WITH SEARCH BAR -->
 <nav class="top-navbar">
     <a class="nav-brand" href="dashboard.php">
         <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
         <span class="brand-name">NearBuy</span>
     </a>
+
+    <form method="GET" action="search.php" class="navbar-search">
+        <div class="navbar-search-wrap">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" name="q" class="navbar-search-input" placeholder="Search sellers or products...">
+        </div>
+    </form>
+
     <div class="nav-right">
         <a href="cart.php" class="cart-nav-btn">
             <svg viewBox="0 0 24 24"><path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0019.99 4H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63z"/></svg>
@@ -238,7 +259,9 @@ $product_emojis = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅
                         foreach ($products as $i => $p):
                             $emoji = $product_emojis[$i % count($product_emojis)];
                     ?>
-                        <a href="product.php?id=<?php echo $p['id']; ?>" class="product-card" data-name="<?php echo strtolower(htmlspecialchars($p['name'])); ?>">
+                        <a href="product.php?id=<?php echo $p['id']; ?>" class="product-card"
+                           data-name="<?php echo strtolower(htmlspecialchars($p['name'])); ?>"
+                           data-seller="<?php echo strtolower(htmlspecialchars($p['seller_name'])); ?>">
                             <div class="card-img"><?php echo $emoji; ?><span class="card-badge">Local</span></div>
                             <div class="card-body">
                                 <div class="card-name"><?php echo htmlspecialchars($p['name']); ?></div>
@@ -258,12 +281,6 @@ $product_emojis = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅
                             ['e'=>'🌽','n'=>'Sweet Corn','s'=>'Farm Fresh PH','p'=>'35.00','l'=>'Caloocan'],
                             ['e'=>'🐟','n'=>'Fresh Tilapia','s'=>'Navotas Fish','p'=>'150.00','l'=>'Navotas'],
                             ['e'=>'🧄','n'=>'Garlic Bulbs','s'=>'Kuya Ben','p'=>'40.00','l'=>'Malabon'],
-                            ['e'=>'🍎','n'=>'Red Apples','s'=>'Fruit Corner','p'=>'89.00','l'=>'Mandaluyong'],
-                            ['e'=>'🥕','n'=>'Baby Carrots','s'=>'Veggie Stop','p'=>'55.00','l'=>'San Juan'],
-                            ['e'=>'🧅','n'=>'White Onions','s'=>'Kuya Ben','p'=>'38.00','l'=>'Malabon'],
-                            ['e'=>'🍊','n'=>'Sweet Oranges','s'=>'Fruit Corner','p'=>'75.00','l'=>'Mandaluyong'],
-                            ['e'=>'🥬','n'=>'Pechay Tagalog','s'=>"Maria's Farm",'p'=>'28.00','l'=>'Quezon City'],
-                            ['e'=>'🫑','n'=>'Green Capsicum','s'=>'Veggie Stop','p'=>'65.00','l'=>'San Juan'],
                         ];
                         foreach ($placeholders as $p): ?>
                         <div class="product-card" style="cursor:default;">
@@ -296,7 +313,7 @@ $product_emojis = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅
                         <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
                         <span>Profile</span>
                     </a>
-                    <a href="product.php" class="quick-link">
+                    <a href="search.php" class="quick-link">
                         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                         <span>Browse</span>
                     </a>
@@ -344,9 +361,12 @@ $product_emojis = ['🥦','🍅','🥚','🌽','🐟','🧄','🍎','🥕','🧅
         const cards = document.querySelectorAll('#productGrid .product-card');
         let visible = 0;
         cards.forEach(card => {
-            const match = (card.dataset.name || '').includes(q);
-            card.style.display = match ? 'block' : 'none';
-            if (match) visible++;
+            // ✅ now searches both product name AND seller name
+            const nameMatch   = (card.dataset.name   || '').includes(q);
+            const sellerMatch = (card.dataset.seller || '').includes(q);
+            const show = nameMatch || sellerMatch;
+            card.style.display = show ? 'block' : 'none';
+            if (show) visible++;
         });
         document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
         document.getElementById('productCount').textContent = visible + ' items';

@@ -10,8 +10,7 @@ $role = $_SESSION['role'] ?? 'buyer';
     </div>
 
     <nav class="nav-links">
-        <!-- Shared: Dashboard -->
-        <a href="dashboard.php" class="nav-item <?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
+        <a href="dashboard.php" class="nav-item <?php echo in_array($current_page, ['dashboard.php','buyer_dashboard.php','seller_dashboard.php']) ? 'active' : ''; ?>">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span class="nav-label">Dashboard</span>
             <span class="nav-tooltip">Dashboard</span>
@@ -31,7 +30,7 @@ $role = $_SESSION['role'] ?? 'buyer';
             </a>
 
         <?php elseif ($role === 'seller'): ?>
-            <a href="my_listings.php" class="nav-item <?php echo ($current_page == 'my_listings.php' || $current_page == 'add_product.php') ? 'active' : ''; ?>">
+            <a href="my_listings.php" class="nav-item <?php echo in_array($current_page, ['my_listings.php','add_product.php']) ? 'active' : ''; ?>">
                 <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.34C18 2.99 16.54 1.5 14.83 1.5c-.89 0-1.7.38-2.28.96L12 3.03l-.55-.57A3.17 3.17 0 009.17 1.5C7.46 1.5 6 2.99 6 4.66c0 .46.11.9.18 1.34H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
                 <span class="nav-label">My Listings</span>
                 <span class="nav-tooltip">My Listings</span>
@@ -49,6 +48,13 @@ $role = $_SESSION['role'] ?? 'buyer';
                 <span class="nav-tooltip">Orders</span>
             </a>
         <?php endif; ?>
+
+        <!-- Shared: Search -->
+        <a href="search.php" class="nav-item <?php echo ($current_page == 'search.php') ? 'active' : ''; ?>">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <span class="nav-label">Search</span>
+            <span class="nav-tooltip">Search</span>
+        </a>
 
         <!-- Shared: Messages, Profile -->
         <a href="messages.php" class="nav-item <?php echo ($current_page == 'messages.php') ? 'active' : ''; ?>">
